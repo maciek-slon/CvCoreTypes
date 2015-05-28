@@ -12,6 +12,10 @@ LINK_DIRECTORIES(${CvCoreTypes_LIB_DIR})
 
 SET(CMAKE_MODULE_PATH @CMAKE_INSTALL_PREFIX@/cmake ${CMAKE_MODULE_PATH})
 
+# Find EIGEN
+find_package(Eigen3 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIR})
+
 # list of libraries to link against when using features of CvCoreTypes
 # add all additional libraries built by this dcl (NOT components)
 # SET(CvCoreTypes_LIBS lib_1 lib_2)
