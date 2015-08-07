@@ -12,14 +12,12 @@
 #include "Component.hpp"
 #include "EventHandler.hpp"
 #include "DataStream.hpp"
-#include "Types/Objects3D/Object3D.hpp"
+#include "Property.hpp"
+
 #include "Types/HomogMatrix.hpp"
-#include "Types/CameraInfo.hpp"
 
 #include <opencv2/core/core.hpp>
-#include <opencv2/calib3d/calib3d.hpp>
 
-#include "Property.hpp"
 
 
 namespace Processors {

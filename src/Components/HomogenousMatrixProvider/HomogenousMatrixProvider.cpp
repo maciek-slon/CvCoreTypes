@@ -20,7 +20,6 @@ using namespace std;
 using namespace cv;
 using namespace boost;
 using Types::HomogMatrix;
-using namespace Types::Objects3D;
 
 HomogenousMatrixProvider::HomogenousMatrixProvider(const std::string & n) :
 	Component(n),
@@ -54,19 +53,19 @@ void HomogenousMatrixProvider::prepareInterface() {
 
 bool HomogenousMatrixProvider::onStart()
 {
-	LOG(LTRACE) << "HomogenousMatrixProvider::onStart()\n";
+	LOG(LTRACE) << "onStart()";
 	return true;
 }
 
 bool HomogenousMatrixProvider::onStop()
 {
-	LOG(LTRACE) << "HomogenousMatrixProvider::onStop()\n";
+	LOG(LTRACE) << "onStop()";
 	return true;
 }
 
 bool HomogenousMatrixProvider::onInit()
 {
-	LOG(LTRACE) << "HomogenousMatrixProvider::onInit()\n";
+	LOG(LTRACE) << "onInit()";
 
 
 	return true;
@@ -74,62 +73,76 @@ bool HomogenousMatrixProvider::onInit()
 
 bool HomogenousMatrixProvider::onFinish()
 {
-	LOG(LTRACE) << "HomogenousMatrixProvider::onFinish()\n";
+	LOG(LTRACE) << "onFinish()";
 	return true;
 }
 
 bool HomogenousMatrixProvider::onStep()
 {
-	LOG(LTRACE) << "HomogenousMatrixProvider::onStep()\n";
+	LOG(LTRACE) << "onStep()";
 	return true;
 }
 
 void HomogenousMatrixProvider::generateHomogenousMatrix()
 {
-	CLOG(LTRACE) << "HomogenousMatrixProvider::generateHomogenousMatrix()\n";
+	CLOG(LTRACE) << "generateHomogenousMatrix()";
 
 //	Mat_<double> rvec;
 //	Mat_<double> tvec;
-	Mat_<double> outputMatrix(4,4);
 
 	// Create homogenous matrix.
 //    Mat_<double> rotationMatrix (3,3);
     //Rodrigues(rvec, rotationMatrix);
-
+/*
 	// Roll - rotation around the X (blue) axis.
-	cv::Mat roll = (cv::Mat_<double>(4, 4) <<
-	              1,          0,           0, 0,
-	              0, cos(prop_roll), -sin(prop_roll), 0,
-	              0, sin(prop_roll),  cos(prop_roll), 0,
-	              0, 0, 0, 1 );
+	cv::Matx44d roll;
+	roll <<
+		1,          0,           0, 0,
+		0, cos(prop_roll), -sin(prop_roll), 0,
+		0, sin(prop_roll),  cos(prop_roll), 0,
+		0, 0, 0, 1 ;
+
+	CLOG(LDEBUG) << "roll (Matx44d):\n" << roll;
 
 	// Pitch - rotation around the Y (green) axis.
-	cv::Mat pitch = (cv::Mat_<double>(4, 4) <<
-            cos(prop_pitch), 0, sin(prop_pitch), 0,
-            0, 1, 0, 0,
-	        -sin(prop_pitch),  0,	cos(prop_pitch), 0,
-	        0, 0, 0, 1 );
+	cv::Matx44d pitch;
+	pitch <<
+		cos(prop_pitch), 0, sin(prop_pitch), 0,
+		0, 1, 0, 0,
+		-sin(prop_pitch),  0,	cos(prop_pitch), 0,
+		0, 0, 0, 1 ;
+	CLOG(LDEBUG) << "pitch (Matx44d):\n" << pitch;
 
 	// Yaw - rotation around the Z (red) axis.
-	cv::Mat yaw = (cv::Mat_<double>(4, 4) <<
-            cos(prop_yaw), -sin(prop_yaw), 0, 0,
-	        sin(prop_yaw),  cos(prop_yaw), 0, 0,
-            0, 0, 1, 0,
-	        0, 0, 0, 1 );
+	cv::Matx44d yaw;
+	yaw <<
+		cos(prop_yaw), -sin(prop_yaw), 0, 0,
+		sin(prop_yaw),  cos(prop_yaw), 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1;
+	CLOG(LDEBUG) << "yaw (Matx44d):\n" << yaw;
 
 	// translation
-	cv::Mat t = (cv::Mat_<double>(4, 4) <<
-			            0, 0, 0, prop_x,
-				        0, 0, 0, prop_y,
-			            0, 0, 0, prop_z,
-				        0, 0, 0, 0 );
+	cv::Matx44d t;
+	t <<
+		0, 0, 0, prop_x,
+		0, 0, 0, prop_y,
+		0, 0, 0, prop_z,
+		0, 0, 0, 0;
+	CLOG(LDEBUG) << "trans (Matx44d):\n" << t;
 
 	// Build the whole transform.
-	outputMatrix = t + yaw * pitch * roll;
+	cv::Matx44d outputMatrix = t + yaw * pitch * roll;
+
+
+	CLOG(LDEBUG) << "output (Matx44d):\n" << outputMatrix;
+*/
+	// Create matrix from XYZ and RPY angles.
+	HomogMatrix hm;
+	hm.setFromXYZRPY(prop_x, prop_y, prop_z, prop_roll, prop_pitch, prop_yaw);
 
 	// Debug: display created matrix.
-	HomogMatrix hm (outputMatrix);
-	CLOG(LINFO) << hm;
+	CLOG(LDEBUG) << "HM (HomogMatrix):\n" << hm;
 
 	out_homogMatrix.write(hm);
 }

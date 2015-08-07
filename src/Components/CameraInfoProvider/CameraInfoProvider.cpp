@@ -18,12 +18,11 @@ namespace CameraInfoProvider {
 CameraInfoProvider::CameraInfoProvider(const std::string & name) :
 		Base::Component(name), width("width", 640), height("height", 480),
 		camera_matrix("camera_matrix", cv::Mat(cv::Mat::eye(3, 3, CV_32FC1))),
-		dist_coeffs("dist_coeffs", cv::Mat(cv::Mat::ones(1, 5, CV_32FC1))),
+		dist_coeffs("dist_coeffs", cv::Mat(cv::Mat::zeros(1, 5, CV_32FC1))),
 		rectificaton_matrix("rectificaton_matrix", cv::Mat(cv::Mat::eye(3, 3, CV_32FC1))),
 		projection_matrix("projection_matrix", cv::Mat(cv::Mat::zeros(3, 4, CV_32FC1))),
 		rotation_matrix("rotation_matrix", cv::Mat(cv::Mat::eye(3, 3, CV_32FC1))),
 		translation_matrix("translation_matrix", cv::Mat(cv::Mat::zeros(3, 1, CV_32FC1))),
-		//data_file("data_file", string("~/stereo/camera_info.yml"))
 		data_file("data_file", string(""))
 {
 	width.addConstraint("0");
