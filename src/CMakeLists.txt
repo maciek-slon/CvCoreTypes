@@ -12,7 +12,7 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
 # OpenCV library
 FIND_PACKAGE( OpenCV REQUIRED )
-
+include_directories(SYSTEM ${OpenCV_INCLUDE_DIRS})
 
 # Find EIGEN
 find_package(Eigen REQUIRED)

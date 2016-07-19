@@ -122,7 +122,7 @@ void CameraInfoProvider::update_params() {
 
 void CameraInfoProvider::reload_file() {
 	CLOG(LDEBUG) << "Loading from " << data_file;
-	cv::FileStorage fs(data_file, cv::FileStorage::READ);
+	cv::FileStorage fs(data_file(), cv::FileStorage::READ);
 	cv::Mat oTempMat;
 	try {
 		fs["M"] >> oTempMat;

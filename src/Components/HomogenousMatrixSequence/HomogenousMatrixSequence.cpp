@@ -102,7 +102,7 @@ void HomogenousMatrixSequence::onLoad() {
 		// Reload the sequence.
 
 		try {
-			cv::FileStorage fs(prop_filename, cv::FileStorage::READ);
+			cv::FileStorage fs(prop_filename(), cv::FileStorage::READ);
 			fs["XYZRPY"] >> matrices;
 			CLOG(LDEBUG) << "Loaded matrix of XYZRPY Hm's:\n" << matrices;
 
