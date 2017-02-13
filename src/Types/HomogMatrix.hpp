@@ -168,7 +168,7 @@ struct HomogMatrix : public HomogMatrixBaseType
 
 
 	/// Redirect the output stream.
-	inline friend ostream & operator<< (ostream &out_, HomogMatrix &hm_) {
+	inline friend std::ostream & operator<< (std::ostream &out_, HomogMatrix &hm_) {
 		cv::Matx44d tmp = hm_;
 		return out_ << tmp;
 	}

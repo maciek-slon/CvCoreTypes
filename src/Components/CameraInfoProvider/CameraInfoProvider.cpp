@@ -23,7 +23,7 @@ CameraInfoProvider::CameraInfoProvider(const std::string & name) :
 		projection_matrix("projection_matrix", cv::Mat(cv::Mat::zeros(3, 4, CV_32FC1))),
 		rotation_matrix("rotation_matrix", cv::Mat(cv::Mat::eye(3, 3, CV_32FC1))),
 		translation_matrix("translation_matrix", cv::Mat(cv::Mat::zeros(3, 1, CV_32FC1))),
-		data_file("data_file", string(""))
+		data_file("data_file", std::string(""))
 {
 	width.addConstraint("0");
 	width.addConstraint("1280");
