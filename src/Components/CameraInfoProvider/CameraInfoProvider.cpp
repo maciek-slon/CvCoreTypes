@@ -25,16 +25,19 @@ CameraInfoProvider::CameraInfoProvider(const std::string & name) :
 		translation_matrix("translation_matrix", cv::Mat(cv::Mat::zeros(3, 1, CV_32FC1))),
 		data_file("data_file", std::string(""))
 {
-	width.addConstraint("0");
-	width.addConstraint("1280");
+	width.addConstraint("1");
+	width.addConstraint("9999");
 	registerProperty(width);
 
-	height.addConstraint("0");
-	height.addConstraint("1280");
+	height.addConstraint("1");
+	height.addConstraint("9999");
 	registerProperty(height);
 
 	registerProperty(camera_matrix);
+	
 	registerProperty(dist_coeffs);
+	dist_coeffs.setCallback(boost::bind(&CameraInfoProvider::distCallback, this, _1, _2));
+	
 	registerProperty(rectificaton_matrix);
 	registerProperty(projection_matrix);
 	registerProperty(rotation_matrix);
@@ -57,13 +60,10 @@ void CameraInfoProvider::prepareInterface() {
 
 	//"Reload file" handler.
 	registerHandler("reload_file", boost::bind(&CameraInfoProvider::reload_file, this));
-//    addDependency("reload_file", NULL);
 
 	//"Update params" handler.
 	registerHandler("update_params", boost::bind(&CameraInfoProvider::update_params, this));
 	addDependency("update_params", &in_camerainfo);
-
-//	CLOG(LNOTICE) << "CameraMatrix: " << camera_matrix;
 }
 
 bool CameraInfoProvider::onInit() {
@@ -105,6 +105,7 @@ void CameraInfoProvider::generate_data() {
 	CLOG(LDEBUG) << "setTranlationMatrix";
 	camera_info.setTranlationMatrix(translation_matrix);
 	CLOG(LDEBUG) << "write";
+	
 	out_camerainfo.write(camera_info);
 }
 
@@ -161,6 +162,24 @@ void CameraInfoProvider::reload_file() {
 		CLOG(LWARNING) << "No translation matrix in " << data_file;
 	}
 	fs.release();
+}
+
+void CameraInfoProvider::distCallback(cv::Mat old_value, cv::Mat new_value) {
+	int cnt = 0;
+	if (new_value.size().width == 1) {
+		cnt = new_value.size().height;
+	} else if (new_value.size().height == 1) {
+		cnt = new_value.size().width;
+	} else {
+		CLOG(LWARNING) << "New value for distortion has wrong shape (" << new_value.size().height << "x" << new_value.size().width << "). Should be 1xN or Nx1 vector.";
+		dist_coeffs = old_value.clone();
+		return;
+	}
+	
+	if ( (cnt != 4) && (cnt != 5) && (cnt != 8) && (cnt != 12) && (cnt != 14) ) {
+		CLOG(LWARNING) << "New value for distortion has wrong size (" << cnt << "). Should contain 4, 5, 8, 12 or 14 values.";
+		dist_coeffs = old_value.clone();
+	}
 }
 
 } //: namespace CameraInfoProvider

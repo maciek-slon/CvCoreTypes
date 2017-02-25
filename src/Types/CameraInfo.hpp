@@ -144,9 +144,13 @@ public:
     
     bool operator== (const CameraInfo & rhs) {
 	bool ret = (m_width == rhs.m_width) && (m_height == rhs.m_height);
-/*	ret = ret && cmpMat(m_camera_matrix, rhs.m_camera_matrix);
+	ret = ret && cmpMat(m_camera_matrix, rhs.m_camera_matrix);
 	ret = ret && cmpMat(m_dist_coeffs, rhs.m_dist_coeffs);
-	*/
+	ret = ret && cmpMat(m_proj_matrix, rhs.m_proj_matrix);
+	ret = ret && cmpMat(m_rectif_matrix, rhs.m_rectif_matrix);
+	ret = ret && cmpMat(m_rotation_matrix, rhs.m_rotation_matrix);
+	ret = ret && cmpMat(m_translation_matrix, rhs.m_translation_matrix);
+	
 	return ret;
     }
     
@@ -155,10 +159,13 @@ public:
     }
     
     bool cmpMat(cv::Mat m1, cv::Mat m2) {
-	cv::Mat diff; // = m1;
-	cv::compare(m1, m2, diff, cv::CMP_NE);
+	if (m1.size() != m2.size()) return false;
+	if (m1.type() != m2.type()) return false;
+	//cv::Mat diff; // = m1;
+	//cv::compare(m1, m2, diff, cv::CMP_NE);
+	cv::Mat diff = m1 != m2;
 	int nz = cv::countNonZero(diff);
-	return nz==0;
+	return (nz <= 0);
     }
 
 
@@ -167,11 +174,11 @@ private:
 	int m_height;
 
 	cv::Mat m_camera_matrix;
-    cv::Mat m_dist_coeffs;
-    cv::Mat m_proj_matrix;
-    cv::Mat m_rectif_matrix;
-    cv::Mat m_rotation_matrix;
-    cv::Mat m_translation_matrix;
+	cv::Mat m_dist_coeffs;
+	cv::Mat m_proj_matrix;
+	cv::Mat m_rectif_matrix;
+	cv::Mat m_rotation_matrix;
+	cv::Mat m_translation_matrix;
 
 };
 

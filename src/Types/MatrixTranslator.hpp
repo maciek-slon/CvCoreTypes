@@ -21,9 +21,9 @@ namespace Types {
 class MatrixTranslator {
 public:
     static cv::Mat fromStr(const std::string & s) {
-        std::vector<double> values;
 
         typedef std::vector< std::string > split_vector_type;
+
 
         split_vector_type rows; // #2: Search for tokens
         boost::split( rows, s, boost::is_any_of(";"), boost::token_compress_on );
@@ -42,6 +42,7 @@ public:
         for (int rr = 0; rr < r; ++rr) {
         	for (int cc = 0; cc < c; ++cc) {
         		ret.at<float>(rr, cc) = boost::lexical_cast<float>(mat[rr][cc]);
+                        std::cout << ret.at<float>(rr, cc) << " ";
         	}
         }
 
@@ -54,11 +55,19 @@ public:
         for(int r = 0; r < m.rows; ++r) {
         	ss << delim;
         	for(int c = 0; c < m.cols; ++c) {
-        		ss << m.at<float>(r, c) << " ";
+                        switch(m.type()) {
+                                case CV_8UC1: ss << m.at<uint8_t>(r, c) << " "; break;
+                                case CV_8SC1: ss << m.at<int8_t>(r, c) << " "; break;
+                                case CV_16UC1: ss << m.at<uint16_t>(r, c) << " "; break;
+                                case CV_16SC1: ss << m.at<int16_t>(r, c) << " "; break;
+                                case CV_32SC1: ss << m.at<int32_t>(r, c) << " "; break;
+                                case CV_32FC1: ss << m.at<float>(r, c) << " "; break;
+                                case CV_64FC1: ss << m.at<double>(r, c) << " "; break;
+                                default: ss << "0 ";
+                        }
         	}
-        	delim = ";";
+        	delim = "; ";
         }
-
         return ss.str();
     }
 

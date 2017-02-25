@@ -6,10 +6,10 @@
  */
 
 #include "HomogenousMatrixProvider.hpp"
-#include "Logger.hpp"
+#include "Common/Logger.hpp"
 
 #include <sstream>
-#include "Property.hpp"
+#include "Base/Property.hpp"
 #include <boost/foreach.hpp>
 
 namespace Processors {

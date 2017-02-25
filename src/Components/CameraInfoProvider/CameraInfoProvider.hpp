@@ -7,11 +7,11 @@
 #ifndef CAMERAINFOPROVIDER_HPP_
 #define CAMERAINFOPROVIDER_HPP_
 
-#include "Component_Aux.hpp"
-#include "Component.hpp"
-#include "DataStream.hpp"
-#include "Property.hpp"
-#include "EventHandler2.hpp"
+#include "Base/Component_Aux.hpp"
+#include "Base/Component.hpp"
+#include "Base/DataStream.hpp"
+#include "Base/Property.hpp"
+#include "Base/EventHandler2.hpp"
 
 #include <Types/CameraInfo.hpp>
 #include <Types/MatrixTranslator.hpp>
@@ -92,6 +92,8 @@ protected:
 	Base::Property<std::string> data_file;
 	Types::CameraInfo camera_info;
 
+
+	void distCallback(cv::Mat old_value, cv::Mat new_value);
 };
 
 } //: namespace CameraInfoProvider
