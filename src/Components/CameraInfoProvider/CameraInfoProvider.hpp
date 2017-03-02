@@ -80,6 +80,7 @@ protected:
 	void generate_data();
 	void update_params();
 	void reload_file();
+	void save_file();
 
 	Base::Property<int> width;
 	Base::Property<int> height;

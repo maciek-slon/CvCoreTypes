@@ -60,6 +60,9 @@ void CameraInfoProvider::prepareInterface() {
 
 	//"Reload file" handler.
 	registerHandler("reload_file", boost::bind(&CameraInfoProvider::reload_file, this));
+	
+	//"Save file" handler.
+	registerHandler("save_file", boost::bind(&CameraInfoProvider::save_file, this));
 
 	//"Update params" handler.
 	registerHandler("update_params", boost::bind(&CameraInfoProvider::update_params, this));
@@ -88,24 +91,24 @@ bool CameraInfoProvider::onStart() {
 }
 
 void CameraInfoProvider::generate_data() {
-	CLOG(LDEBUG) << "setWidth";
+	CLOG(LDEBUG) << "setWidth " << width;
 	camera_info.setWidth(width);
-	CLOG(LDEBUG) << "setHeight";
+	CLOG(LDEBUG) << "setHeight " << height;
 	camera_info.setHeight(height);
-	CLOG(LDEBUG) << "setCameraMatrix";
+	CLOG(LDEBUG) << "setCameraMatrix " << camera_matrix;
 	camera_info.setCameraMatrix(camera_matrix);
-	CLOG(LDEBUG) << "setDistCoeffs";
+	CLOG(LDEBUG) << "setDistCoeffs " << dist_coeffs;
 	camera_info.setDistCoeffs(dist_coeffs);
-	CLOG(LDEBUG) << "setRectificationMatrix";
+	CLOG(LDEBUG) << "setRectificationMatrix " << rectificaton_matrix;
 	camera_info.setRectificationMatrix(rectificaton_matrix);
-	CLOG(LDEBUG) << "setProjectionMatrix";
+	CLOG(LDEBUG) << "setProjectionMatrix " << projection_matrix;
 	camera_info.setProjectionMatrix(projection_matrix);
-	CLOG(LDEBUG) << "setRotationMatrix";
+	CLOG(LDEBUG) << "setRotationMatrix " << rotation_matrix;
 	camera_info.setRotationMatrix(rotation_matrix);
-	CLOG(LDEBUG) << "setTranlationMatrix";
+	CLOG(LDEBUG) << "setTranlationMatrix " << translation_matrix;
 	camera_info.setTranlationMatrix(translation_matrix);
 	CLOG(LDEBUG) << "write";
-	
+
 	out_camerainfo.write(camera_info);
 }
 
@@ -124,6 +127,10 @@ void CameraInfoProvider::update_params() {
 void CameraInfoProvider::reload_file() {
 	CLOG(LDEBUG) << "Loading from " << data_file;
 	cv::FileStorage fs(data_file(), cv::FileStorage::READ);
+	if (!fs.isOpened()) {
+		CLOG(LERROR) << "Can't open file [" << data_file << "]";
+		return;
+	}
 	cv::Mat oTempMat;
 	try {
 		fs["M"] >> oTempMat;
@@ -161,7 +168,23 @@ void CameraInfoProvider::reload_file() {
 	} catch (...) {
 		CLOG(LWARNING) << "No translation matrix in " << data_file;
 	}
-	fs.release();
+	fs.release();	
+}
+
+void CameraInfoProvider::save_file() {
+	CLOG(LDEBUG) << "Saving to " << data_file;
+	cv::FileStorage fs(data_file(), cv::FileStorage::WRITE);
+	if (!fs.isOpened()) {
+		CLOG(LERROR) << "Can't open file [" << data_file << "]";
+		return;
+	}
+	fs << "M" << camera_matrix();
+	fs << "D" << dist_coeffs();
+	fs << "R" << rectificaton_matrix();
+	fs << "P" << projection_matrix();
+	fs << "ROT" << rotation_matrix();
+	fs << "T" << translation_matrix();
+	fs.release();	
 }
 
 void CameraInfoProvider::distCallback(cv::Mat old_value, cv::Mat new_value) {
